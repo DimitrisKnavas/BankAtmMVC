@@ -5,5 +5,25 @@
     <div class="text-center">
         <h1 class="display-4">Welcome</h1>
         <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-        <a asp-area="" asp-controller="Transaction" asp-action="Deposit">New Deposit</a>
-    </div>
+        <div>
+            <span class="">
+                <a asp-controller="Transaction" asp-action="Deposit"><input type="button" class="btn btn-primary" value="Deposit" />></a>
+            </span>
+        </div>
+        <br />
+        <br />
+        <div>
+            <span class="itemcenter">
+                <a asp-controller="Transaction" asp-action="Withdraw"><input type="button" class="btn btn-primary" value="Withdraw" />></a>
+            </span>
+        </div>  
+        <br />
+        <br />
+        <div>
+            <span class="itemright">
+                <a asp-controller="Transaction" asp-action="PersonalTransactions"><input type="button" class="btn btn-primary" value="Your Transactions" />></a>
+            </span>
+        </div>
+
+
+</div>

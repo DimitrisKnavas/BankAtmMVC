@@ -15,7 +15,7 @@ namespace BankAtmMVC.Models
         [DataType(DataType.Currency)]
         public decimal Amount { get; set; }
 
-        [Required]
+        
         [DataType(DataType.DateTime)]
         public DateTime Date { get; set; }
 

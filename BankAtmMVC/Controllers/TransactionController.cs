@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -23,6 +24,11 @@ namespace BankAtmMVC.Controllers
             _context = context;
         }
 
+        [BindProperty]
+        public InputModel Input { get; set; }
+
+
+
         //GET: Transaction/Deposit
         public IActionResult Deposit()
         {
@@ -36,12 +42,15 @@ namespace BankAtmMVC.Controllers
         {
             var currentId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             transaction.BankUserID = currentId;
+            transaction.Date = DateTime.Now;
+            var bankUser = _context.AspNetUsers.Where(i => i.Id == currentId).First();
+            
             try{
 
                 if (ModelState.IsValid)
                 {
-
-                  _context.Transactions.Add(transaction);
+                  bankUser.Balance += Input.Amount; 
+                  _context.Transactions.Add(transaction);                
                   await _context.SaveChangesAsync();
                   return RedirectToAction("Index", "Home");
                 }
@@ -55,5 +64,64 @@ namespace BankAtmMVC.Controllers
 
              return View(transaction);
         }
+
+        //GET: Transaction/Withdraw
+        public IActionResult Withdraw()
+        {
+            return View();
+        }
+
+        //GET: Transaction/Withdraw
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Withdraw([Bind("Amount,Date")]Transaction transaction)
+        {
+            var currentId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            transaction.BankUserID = currentId;
+            transaction.Date = DateTime.Now;
+            var bankUser = _context.AspNetUsers.Where(i => i.Id == currentId).First();
+
+            try
+            {
+
+                if (ModelState.IsValid && (bankUser.Balance-Input.Amount)>0)
+                {
+                    bankUser.Balance -= Input.Amount;
+                    _context.Transactions.Add(transaction);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction("Index", "Home");
+                }
+            }
+            catch (DbUpdateException)
+            {
+                ModelState.AddModelError("", "Unable to complete the transaction. " +
+                "Try again, and if the problem persists " +
+               "see your system administrator.");
+            }
+
+            return View(transaction);
+        }
+
+        public async Task<IActionResult> PersonalTransactions()
+        {
+            var currentId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            //var userTransactions = _context.Transactions.Where(id => id.BankUserID == currentId);
+            var userTransactions = await _context.AspNetUsers
+                                .Include(s => s.Transactions)
+                                .AsNoTracking()
+                                .FirstOrDefaultAsync(m => m.Id == currentId);
+
+
+
+            return View(userTransactions);
+        }
+
+        public class InputModel : Transaction { }
+
+        }
     }
-}
+
+    
+
+    
