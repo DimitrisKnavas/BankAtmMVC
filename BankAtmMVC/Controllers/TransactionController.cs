@@ -9,6 +9,7 @@ using BankAtmMVC.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 
 
 namespace BankAtmMVC.Controllers
@@ -43,6 +44,7 @@ namespace BankAtmMVC.Controllers
             var currentId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             transaction.BankUserID = currentId;
             transaction.Date = DateTime.Now;
+            transaction.Type = TransactionType.Deposit;
             var bankUser = _context.AspNetUsers.Where(i => i.Id == currentId).First();
             
             try{
@@ -79,6 +81,7 @@ namespace BankAtmMVC.Controllers
             var currentId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             transaction.BankUserID = currentId;
             transaction.Date = DateTime.Now;
+            transaction.Type = TransactionType.Withdraw;
             var bankUser = _context.AspNetUsers.Where(i => i.Id == currentId).First();
 
             try

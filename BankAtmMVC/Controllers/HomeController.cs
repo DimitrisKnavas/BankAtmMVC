@@ -6,15 +6,26 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using BankAtmMVC.Models;
 using Microsoft.AspNetCore.Authorization;
+using BankAtmMVC.Data;
+using System.Security.Claims;
 
 namespace BankAtmMVC.Controllers
 {
     [Authorize]
     public class HomeController : Controller
     {
+        private readonly ApplicationDbContext db;
+
+        public HomeController(ApplicationDbContext context)
+        {
+            db = context;
+        }
+
         public IActionResult Index()
         {
-            return View();
+            var currentId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var user = db.AspNetUsers.Where(i => i.Id == currentId).First();
+            return View(user);
         }
 
         public IActionResult Privacy()

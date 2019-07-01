@@ -1,10 +1,12 @@
-﻿@{
+﻿@model BankAtmMVC.Models.BankUser
+@{
     ViewData["Title"] = "Home Page";
 }
 
     <div class="text-center">
-        <h1 class="display-4">Welcome</h1>
-        <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+        <p class="display-4">Welcome back @Model.FirstName @Model.LastName</p>
+        <h1>Your Balance : @Model.Balance</h1>
+        <br />
         <div>
             <span class="">
                 <a asp-controller="Transaction" asp-action="Deposit"><input type="button" class="btn btn-primary" value="Deposit" />></a>

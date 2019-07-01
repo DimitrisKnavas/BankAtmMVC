@@ -7,9 +7,13 @@ using System.Threading.Tasks;
 
 namespace BankAtmMVC.Models
 {
+    public enum TransactionType {Deposit, Withdraw};
+
     public class Transaction
     {
         public int ID { get; set; }
+
+        public TransactionType Type { get; set; }
 
         [Required]
         [DataType(DataType.Currency)]
