@@ -36,10 +36,10 @@ namespace BankAtmMVC.Controllers
             return View();
         }
 
-        //GET: Transaction/Deposit
+        //POST: Transaction/Deposit
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Deposit([Bind("Amount,Date")]Transaction transaction)
+        public async Task<IActionResult> Deposit([Bind("Amount")]Transaction transaction)
         {
             var currentId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             transaction.BankUserID = currentId;
@@ -73,10 +73,10 @@ namespace BankAtmMVC.Controllers
             return View();
         }
 
-        //GET: Transaction/Withdraw
+        //POST: Transaction/Withdraw
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Withdraw([Bind("Amount,Date")]Transaction transaction)
+        public async Task<IActionResult> Withdraw([Bind("Amount")]Transaction transaction)
         {
             var currentId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             transaction.BankUserID = currentId;
@@ -109,7 +109,6 @@ namespace BankAtmMVC.Controllers
         {
             var currentId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-            //var userTransactions = _context.Transactions.Where(id => id.BankUserID == currentId);
             var userTransactions = await _context.AspNetUsers
                                 .Include(s => s.Transactions)
                                 .AsNoTracking()
@@ -119,6 +118,21 @@ namespace BankAtmMVC.Controllers
 
             return View(userTransactions);
         }
+
+        [Route("{id}")]
+        public async Task<IActionResult> PersonalTransactions(string id)
+        {
+            var currentId = id;
+           
+            var userTransactions = await _context.AspNetUsers
+                                .Include(s => s.Transactions)
+                                .AsNoTracking()
+                                .FirstOrDefaultAsync(m => m.Id == currentId);
+
+
+
+            return View(userTransactions);
+        } 
 
         public class InputModel : Transaction { }
 
