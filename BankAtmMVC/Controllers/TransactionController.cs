@@ -43,7 +43,7 @@ namespace BankAtmMVC.Controllers
         {
             var currentId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             transaction.BankUserID = currentId;
-            transaction.Date = DateTime.Now;
+            transaction.Date = DateTime.UtcNow;
             transaction.Type = TransactionType.Deposit;
             var bankUser = _context.AspNetUsers.Where(i => i.Id == currentId).First();
             
@@ -80,7 +80,7 @@ namespace BankAtmMVC.Controllers
         {
             var currentId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             transaction.BankUserID = currentId;
-            transaction.Date = DateTime.Now;
+            transaction.Date = DateTime.UtcNow;
             transaction.Type = TransactionType.Withdraw;
             var bankUser = _context.AspNetUsers.Where(i => i.Id == currentId).First();
 
@@ -114,11 +114,11 @@ namespace BankAtmMVC.Controllers
                                 .AsNoTracking()
                                 .FirstOrDefaultAsync(m => m.Id == currentId);
 
-
-
+            UtcToLocalDate(userTransactions);
+            
             return View(userTransactions);
         }
-
+        [HttpPost]
         [Route("{id}")]
         public async Task<IActionResult> PersonalTransactions(string id)
         {
@@ -129,12 +129,24 @@ namespace BankAtmMVC.Controllers
                                 .AsNoTracking()
                                 .FirstOrDefaultAsync(m => m.Id == currentId);
 
-
+            UtcToLocalDate(userTransactions);
 
             return View(userTransactions);
         } 
 
         public class InputModel : Transaction { }
+
+        public void UtcToLocalDate(BankUser user)
+        {
+            DateTime utcToLocal;
+
+            foreach (var transaction in user.Transactions)
+            {
+                utcToLocal = transaction.Date.ToLocalTime();
+                transaction.Date = utcToLocal;
+
+            }
+        }
 
         }
     }
