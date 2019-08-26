@@ -104,7 +104,7 @@ namespace BankAtmMVC.Controllers
 
             return View(transaction);
         }
-
+        //GET: Transaction/PersonalTransactions
         public async Task<IActionResult> PersonalTransactions()
         {
             var currentId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
@@ -118,7 +118,9 @@ namespace BankAtmMVC.Controllers
             
             return View(userTransactions);
         }
-        [HttpPost]
+
+        //maybe should be a Post call so id doesn't show up in URL
+        //GET: Transaction/PersonalTransactions/id
         [Route("{id}")]
         public async Task<IActionResult> PersonalTransactions(string id)
         {

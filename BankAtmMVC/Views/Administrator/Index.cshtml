@@ -55,7 +55,7 @@
             </td>
             <td>
                 @*<a asp-action="Edit" asp-route-id="@item.Id">Edit</a> *@|
-                <a asp-controller="Transaction" formaction="PersonalTransactions" asp-route-id="@item.Id" formmethod="post">Show Transactions</a> |
+                <a asp-controller="Transaction" asp-action="PersonalTransactions" asp-route-id="@item.Id">Show Transactions</a> |
                 @*<a asp-action="Delete" asp-route-id="@item.Id">Delete</a>*@
             </td>
         </tr>
